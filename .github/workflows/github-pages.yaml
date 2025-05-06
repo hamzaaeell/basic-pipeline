@@ -3,7 +3,7 @@ name: Lint and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main 
+      - main
 
 permissions:
   contents: read
@@ -15,9 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repository code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Run the Super Linter to check HTML and CSS code
       - name: Run Super Linter
         uses: github/super-linter@v4
         env:
@@ -26,14 +28,19 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Configure GitHub Pages (make sure Pages is enabled in settings)
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Upload site content (make sure this is the right path)
       - name: Upload site to GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: src
+          path: ./src  # This should point to where your index.html is located, adjust if necessary
 
+      # Deploy the content to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
