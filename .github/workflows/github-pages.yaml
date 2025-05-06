@@ -3,7 +3,12 @@ name: Lint and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Or change to your default branch
+      - main 
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   lint-and-deploy:
