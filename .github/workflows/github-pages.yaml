@@ -10,7 +10,6 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -23,11 +22,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      # Checkout repository code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Run the Super Linter to check HTML and CSS code
       - name: Run Super Linter
         uses: github/super-linter@v5
         env:
@@ -36,17 +33,14 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Setup Pages
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      # Upload site content
       - name: Upload site to GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './src'  # Pointing to the src directory where your website files are located
+          path: './src'  
 
-      # Deploy the content to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
