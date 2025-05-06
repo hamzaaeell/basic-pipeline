@@ -10,9 +10,17 @@ permissions:
   pages: write
   id-token: write
 
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   lint-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       # Checkout repository code
@@ -21,26 +29,24 @@ jobs:
 
       # Run the Super Linter to check HTML and CSS code
       - name: Run Super Linter
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_HTML: true
           VALIDATE_CSS: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Configure GitHub Pages (make sure Pages is enabled in settings)
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # Setup Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
-      # Upload site content (make sure this is the right path)
+      # Upload site content
       - name: Upload site to GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./src  # This should point to where your index.html is located, adjust if necessary
+          path: './src'  # Pointing to the src directory where your website files are located
 
       # Deploy the content to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
